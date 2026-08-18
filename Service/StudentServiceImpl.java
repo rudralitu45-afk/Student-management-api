@@ -19,7 +19,6 @@ public class StudentServiceImpl implements StudentService {
         this.studentRepository = studentRepository;
     }
 
-    // Entity → Response DTO
     private StudentResponseDto mapToResponseDTO(Student student) {
 
         StudentResponseDto dto = new StudentResponseDto();
@@ -33,7 +32,6 @@ public class StudentServiceImpl implements StudentService {
         return dto;
     }
 
-    // Request DTO → Entity
     private Student mapToEntity(StudentRequestDto dto) {
 
         Student student = new Student();
