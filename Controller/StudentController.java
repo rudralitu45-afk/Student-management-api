@@ -1,12 +1,14 @@
 package com.rnr.Student_m_system.Controller;
 
 
+import com.rnr.Student_m_system.Dto.StudentRequestDto;
+import com.rnr.Student_m_system.Dto.StudentResponseDto;
 import com.rnr.Student_m_system.Service.StudentService;
 import com.rnr.Student_m_system.entity.Student;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 
 @RestController
@@ -19,51 +21,43 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-
     @PostMapping
-    public ResponseEntity<Student> createStudent(
-            @RequestBody Student student) {
+    public ResponseEntity<StudentResponseDto> createStudent(
+            @Valid @RequestBody StudentRequestDto dto) {
 
-        Student savedStudent =
-                studentService.saveStudent(student);
+        StudentResponseDto savedStudent = studentService.saveStudent(dto);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(savedStudent);
     }
 
-
     @GetMapping
-    public ResponseEntity<List<Student>> getAllStudents() {
+    public ResponseEntity<List<StudentResponseDto>> getAllStudents() {
 
         return ResponseEntity.ok(
                 studentService.getAllStudents()
         );
     }
 
-
     @GetMapping("/{id}")
-    public ResponseEntity<Student> getStudentById(
+    public ResponseEntity<StudentResponseDto> getStudentById(
             @PathVariable Long id) {
 
-        Student student =
-                studentService.getStudentById(id);
-
-        return ResponseEntity.ok(student);
+        return ResponseEntity.ok(
+                studentService.getStudentById(id)
+        );
     }
-
 
     @PutMapping("/{id}")
-    public ResponseEntity<Student> updateStudent(
+    public ResponseEntity<StudentResponseDto> updateStudent(
             @PathVariable Long id,
-            @RequestBody Student student) {
+            @Valid @RequestBody StudentRequestDto dto) {
 
-        Student updatedStudent =
-                studentService.updateStudent(id, student);
-
-        return ResponseEntity.ok(updatedStudent);
+        return ResponseEntity.ok(
+                studentService.updateStudent(id, dto)
+        );
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStudent(

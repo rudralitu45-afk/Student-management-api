@@ -1,18 +1,19 @@
 package com.rnr.Student_m_system.Service;
 
-import com.rnr.Student_m_system.entity.Student;
+import com.rnr.Student_m_system.Dto.StudentRequestDto;
+import com.rnr.Student_m_system.Dto.StudentResponseDto;
 
 import java.util.List;
 
 public interface StudentService {
 
-    Student saveStudent(Student student);
+    StudentResponseDto saveStudent(StudentRequestDto dto);
 
-    List<Student> getAllStudents();
+    List<StudentResponseDto> getAllStudents();
 
-    Student getStudentById(Long id);
+    StudentResponseDto getStudentById(Long id);
 
-    Student updateStudent(Long id, Student student);
+    StudentResponseDto updateStudent(Long id, StudentRequestDto dto);
 
     void deleteStudent(Long id);
 }
