@@ -1,0 +1,98 @@
+package com.rnr.SMS.Service;
+import com.rnr.SMS.Dto.StudentRequestDto;
+import com.rnr.SMS.Dto.StudentResponseDto;
+import com.rnr.SMS.Entity.Student;
+import com.rnr.SMS.Repository.StudentRepository;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+public class StudentServiceImpl implements StudentService {
+
+    private final StudentRepository studentRepository;
+
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
+
+    private StudentResponseDto mapToResponseDto(Student student) {
+        StudentResponseDto dto = new StudentResponseDto();
+        dto.setId(student.getId());
+        dto.setFirstName(student.getFirstName());
+        dto.setLastName(student.getLastName());
+        dto.setEmail(student.getEmail());
+        dto.setCourse(student.getCourse());
+        return dto;
+    }
+
+    @Override
+    public StudentResponseDto saveStudent(StudentRequestDto dto) {
+        Student student = new Student();
+        student.setFirstName(dto.getFirstName());
+        student.setLastName(dto.getLastName());
+        student.setEmail(dto.getEmail());
+        student.setCourse(dto.getCourse());
+        student.setPassword(dto.getPassword());
+        student.setCreatedAt(LocalDateTime.now());
+
+        Student savedStudent = studentRepository.save(student);
+        return mapToResponseDto(savedStudent);
+    }
+
+    @Override
+    public List<StudentResponseDto> getAllStudents() {
+        return studentRepository.findAll()
+                .stream()
+                .map(this::mapToResponseDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public StudentResponseDto getStudentById(Long id) {
+        Student student = studentRepository.findById(id).orElse(null);
+        if (student == null) {
+            return null;
+        }
+        return mapToResponseDto(student);
+    }
+
+    @Override
+    public void deleteStudent(Long id) {
+        studentRepository.deleteById(id);
+    }
+
+    @Override
+    public StudentResponseDto updateStudent(Long id, StudentRequestDto dto) {
+        Student existing = studentRepository.findById(id).orElse(null);
+        if (existing != null) {
+            existing.setFirstName(dto.getFirstName());
+            existing.setLastName(dto.getLastName());
+            existing.setEmail(dto.getEmail());
+            existing.setCourse(dto.getCourse());
+            existing.setPassword(dto.getPassword());
+
+            Student updated = studentRepository.save(existing);
+            return mapToResponseDto(updated);
+        }
+        return null;
+    }
+
+    @Override
+    public StudentResponseDto patchStudent(Long id, StudentRequestDto dto) {
+        Student existing = studentRepository.findById(id).orElse(null);
+        if (existing != null) {
+            if (dto.getFirstName() != null) existing.setFirstName(dto.getFirstName());
+            if (dto.getLastName() != null) existing.setLastName(dto.getLastName());
+            if (dto.getEmail() != null) existing.setEmail(dto.getEmail());
+            if (dto.getCourse() != null) existing.setCourse(dto.getCourse());
+            if (dto.getPassword() != null) existing.setPassword(dto.getPassword());
+
+            Student updated = studentRepository.save(existing);
+            return mapToResponseDto(updated);
+        }
+        return null;
+    }
+}
