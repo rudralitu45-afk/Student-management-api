@@ -20,50 +20,28 @@ public class StudentController {
 
     @PostMapping
     public ResponseEntity<StudentResponseDto> createStudent(@Valid @RequestBody StudentRequestDto dto) {
-        StudentResponseDto savedStudent = studentService.saveStudent(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedStudent);
+        return ResponseEntity.status(HttpStatus.CREATED).body(studentService.saveStudent(dto));
     }
-
 
     @GetMapping
     public ResponseEntity<List<StudentResponseDto>> getAllStudents() {
         return ResponseEntity.ok(studentService.getAllStudents());
     }
 
-
     @GetMapping("/{id}")
     public ResponseEntity<StudentResponseDto> getStudentById(@PathVariable Long id) {
-        StudentResponseDto student = studentService.getStudentById(id);
-        if (student == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(student);
+        return ResponseEntity.ok(studentService.getStudentById(id));
     }
-
 
     @PutMapping("/{id}")
-    public ResponseEntity<StudentResponseDto> updateStudent(
-            @PathVariable Long id,
-            @Valid @RequestBody StudentRequestDto dto) {
-        StudentResponseDto updated = studentService.updateStudent(id, dto);
-        if (updated == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(updated);
+    public ResponseEntity<StudentResponseDto> updateStudent(@PathVariable Long id, @Valid @RequestBody StudentRequestDto dto) {
+        return ResponseEntity.ok(studentService.updateStudent(id, dto));
     }
-
 
     @PatchMapping("/{id}")
-    public ResponseEntity<StudentResponseDto> patchStudent(
-            @PathVariable Long id,
-            @RequestBody StudentRequestDto dto) {
-        StudentResponseDto patched = studentService.patchStudent(id, dto);
-        if (patched == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(patched);
+    public ResponseEntity<StudentResponseDto> patchStudent(@PathVariable Long id, @RequestBody StudentRequestDto dto) {
+        return ResponseEntity.ok(studentService.patchStudent(id, dto));
     }
-
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
