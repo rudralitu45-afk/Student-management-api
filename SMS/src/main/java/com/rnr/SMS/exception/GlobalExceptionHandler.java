@@ -1,5 +1,5 @@
 package com.rnr.SMS.exception;
-import com.rnr.SMS.payload.ErrorResponse;
+import com.rnr.SMS.payload.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -7,16 +7,14 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
-
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> handleValidationException(
+    public ResponseEntity<ApiResponse<Object>> handleValidationException(
             MethodArgumentNotValidException ex,
             HttpServletRequest request) {
 
@@ -25,48 +23,43 @@ public class GlobalExceptionHandler {
             errors.put(error.getField(), error.getDefaultMessage());
         });
 
-        ErrorResponse errorResponse = new ErrorResponse(
+        ApiResponse<Object> response = new ApiResponse<>(
+                false,
                 LocalDateTime.now(),
                 HttpStatus.BAD_REQUEST.value(),
-                HttpStatus.BAD_REQUEST.getReasonPhrase(),
-                errors,
-                request.getRequestURI()
+                "Validation Failed",
+                errors
         );
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
     }
 
-
     @ExceptionHandler(StudentNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleStudentNotFoundException(
+    public ResponseEntity<ApiResponse<Object>> handleStudentNotFoundException(
             StudentNotFoundException ex,
             HttpServletRequest request) {
 
-        ErrorResponse errorResponse = new ErrorResponse(
+        ApiResponse<Object> response = new ApiResponse<>(
+                false,
                 LocalDateTime.now(),
                 HttpStatus.NOT_FOUND.value(),
-                HttpStatus.NOT_FOUND.getReasonPhrase(),
                 ex.getMessage(),
-                request.getRequestURI()
+                null
         );
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
 
-
     @ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<ErrorResponse> handleDuplicateEmailException(
+    public ResponseEntity<ApiResponse<Object>> handleDuplicateEmailException(
             DuplicateEmailException ex,
             HttpServletRequest request) {
 
-        ErrorResponse errorResponse = new ErrorResponse(
+        ApiResponse<Object> response = new ApiResponse<>(
+                false,
                 LocalDateTime.now(),
                 HttpStatus.CONFLICT.value(),
-                HttpStatus.CONFLICT.getReasonPhrase(),
                 ex.getMessage(),
-                request.getRequestURI()
+                null
         );
-
-        return new ResponseEntity<>(errorResponse, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(response, HttpStatus.CONFLICT);
     }
 }
