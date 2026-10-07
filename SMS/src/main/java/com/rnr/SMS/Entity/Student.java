@@ -12,15 +12,17 @@ public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Long id;
+    private Long id;
 
     private String firstName;
-     private String lastName;
-     private String email;
+    private String lastName;
+    private String email;
     private String course;
-
-
     private String password;
-
     private LocalDateTime createdAt;
+
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "address_id")
+    private Address address;
 }

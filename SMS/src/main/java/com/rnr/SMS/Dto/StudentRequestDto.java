@@ -1,13 +1,7 @@
 package com.rnr.SMS.Dto;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
@@ -15,19 +9,11 @@ import lombok.NoArgsConstructor;
 public class StudentRequestDto {
 
     @NotBlank(message = "First name is required")
-    @Size(
-            min = 2,
-            max = 30,
-            message = "First name must be between 2 and 30 characters"
-    )
+    @Size(min = 2, max = 30, message = "First name must be between 2 and 30 characters")
     private String firstName;
 
     @NotBlank(message = "Last name is required")
-    @Size(
-            min = 2,
-            max = 50,
-            message = "Last name must be between 2 and 50 characters"
-    )
+    @Size(min = 2, max = 50, message = "Last name must be between 2 and 50 characters")
     private String lastName;
 
     @NotBlank(message = "Email is required")
@@ -43,4 +29,7 @@ public class StudentRequestDto {
             message = "Password must contain at least 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char"
     )
     private String password;
+
+    @Valid
+    private AddressRequestDto address;
 }
