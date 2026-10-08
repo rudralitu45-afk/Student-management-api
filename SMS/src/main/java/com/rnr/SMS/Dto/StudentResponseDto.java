@@ -11,7 +11,6 @@ public class StudentResponseDto {
     private String lastName;
     private String email;
     private String course;
-
-
     private AddressResponseDto address;
+    private String departmentName;
 }

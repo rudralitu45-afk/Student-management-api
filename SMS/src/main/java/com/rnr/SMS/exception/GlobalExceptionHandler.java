@@ -10,19 +10,17 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Object>> handleValidationException(
-            MethodArgumentNotValidException ex,
-            HttpServletRequest request) {
-
+            MethodArgumentNotValidException ex, HttpServletRequest request) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getFieldErrors().forEach((FieldError error) -> {
             errors.put(error.getField(), error.getDefaultMessage());
         });
-
         ApiResponse<Object> response = new ApiResponse<>(
                 false,
                 LocalDateTime.now(),
@@ -35,9 +33,21 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(StudentNotFoundException.class)
     public ResponseEntity<ApiResponse<Object>> handleStudentNotFoundException(
-            StudentNotFoundException ex,
-            HttpServletRequest request) {
+            StudentNotFoundException ex, HttpServletRequest request) {
+        ApiResponse<Object> response = new ApiResponse<>(
+                false,
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                ex.getMessage(),
+                null
+        );
+        return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
 
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ApiResponse<Object>> handleResourceNotFoundException(
+            ResourceNotFoundException ex, HttpServletRequest request) {
         ApiResponse<Object> response = new ApiResponse<>(
                 false,
                 LocalDateTime.now(),
@@ -50,9 +60,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(DuplicateEmailException.class)
     public ResponseEntity<ApiResponse<Object>> handleDuplicateEmailException(
-            DuplicateEmailException ex,
-            HttpServletRequest request) {
-
+            DuplicateEmailException ex, HttpServletRequest request) {
         ApiResponse<Object> response = new ApiResponse<>(
                 false,
                 LocalDateTime.now(),

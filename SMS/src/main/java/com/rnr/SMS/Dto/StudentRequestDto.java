@@ -32,4 +32,7 @@ public class StudentRequestDto {
 
     @Valid
     private AddressRequestDto address;
+
+    @NotNull(message = "Department id is required")
+    private Long departmentId;
 }

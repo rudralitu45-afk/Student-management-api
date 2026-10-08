@@ -21,8 +21,12 @@ public class Student {
     private String password;
     private LocalDateTime createdAt;
 
-
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
     private Address address;
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "department_id")
+    private Department department;
 }

@@ -3,10 +3,14 @@ import com.rnr.SMS.Dto.AddressResponseDto;
 import com.rnr.SMS.Dto.StudentRequestDto;
 import com.rnr.SMS.Dto.StudentResponseDto;
 import com.rnr.SMS.Entity.Address;
+import com.rnr.SMS.Entity.Department;
 import com.rnr.SMS.Entity.Student;
+import com.rnr.SMS.Repository.DepartmentRepository;
 import com.rnr.SMS.Repository.StudentRepository;
 import com.rnr.SMS.exception.DuplicateEmailException;
+import com.rnr.SMS.exception.ResourceNotFoundException;
 import com.rnr.SMS.exception.StudentNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -14,13 +18,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
 
     private final StudentRepository studentRepository;
-
-    public StudentServiceImpl(StudentRepository studentRepository) {
-        this.studentRepository = studentRepository;
-    }
+    private final DepartmentRepository departmentRepository;
 
     private StudentResponseDto mapToResponseDto(Student student) {
         StudentResponseDto dto = new StudentResponseDto();
@@ -37,9 +39,13 @@ public class StudentServiceImpl implements StudentService {
             addrDto.setCountry(student.getAddress().getCountry());
             dto.setAddress(addrDto);
         }
+
+        if (student.getDepartment() != null) {
+            dto.setDepartmentName(student.getDepartment().getDepartmentName());
+        }
+
         return dto;
     }
-
 
     @Override
     public StudentResponseDto saveStudent(StudentRequestDto dto) {
@@ -63,10 +69,14 @@ public class StudentServiceImpl implements StudentService {
             student.setAddress(address);
         }
 
+
+        Department department = departmentRepository.findById(dto.getDepartmentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + dto.getDepartmentId()));
+        student.setDepartment(department);
+
         Student saved = studentRepository.save(student);
         return mapToResponseDto(saved);
     }
-
 
     @Override
     public List<StudentResponseDto> getAllStudents() {
@@ -81,7 +91,6 @@ public class StudentServiceImpl implements StudentService {
                 .orElseThrow(() -> new StudentNotFoundException("Student not found with id: " + id));
         return mapToResponseDto(student);
     }
-
 
     @Override
     public StudentResponseDto updateStudent(Long id, StudentRequestDto dto) {
@@ -100,19 +109,20 @@ public class StudentServiceImpl implements StudentService {
 
         if (dto.getAddress() != null) {
             Address address = existing.getAddress();
-            if (address == null) {
-                address = new Address();
-            }
+            if (address == null) address = new Address();
             address.setCity(dto.getAddress().getCity());
             address.setState(dto.getAddress().getState());
             address.setCountry(dto.getAddress().getCountry());
             existing.setAddress(address);
         }
 
+        Department department = departmentRepository.findById(dto.getDepartmentId())
+                .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + dto.getDepartmentId()));
+        existing.setDepartment(department);
+
         Student updated = studentRepository.save(existing);
         return mapToResponseDto(updated);
     }
-
 
     @Override
     public StudentResponseDto patchStudent(Long id, StudentRequestDto dto) {
@@ -131,19 +141,22 @@ public class StudentServiceImpl implements StudentService {
 
         if (dto.getAddress() != null) {
             Address address = existing.getAddress();
-            if (address == null) {
-                address = new Address();
-            }
+            if (address == null) address = new Address();
             if (dto.getAddress().getCity() != null) address.setCity(dto.getAddress().getCity());
             if (dto.getAddress().getState() != null) address.setState(dto.getAddress().getState());
             if (dto.getAddress().getCountry() != null) address.setCountry(dto.getAddress().getCountry());
             existing.setAddress(address);
         }
 
+        if (dto.getDepartmentId() != null) {
+            Department department = departmentRepository.findById(dto.getDepartmentId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Department not found with id: " + dto.getDepartmentId()));
+            existing.setDepartment(department);
+        }
+
         Student updated = studentRepository.save(existing);
         return mapToResponseDto(updated);
     }
-
 
     @Override
     public void deleteStudent(Long id) {
