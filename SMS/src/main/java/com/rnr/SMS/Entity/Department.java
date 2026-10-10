@@ -1,6 +1,7 @@
 package com.rnr.SMS.Entity;
 import jakarta.persistence.*;
 import lombok.*;
+import java.util.List;
 
 @Entity
 @Table(name = "departments")
@@ -16,4 +17,8 @@ public class Department {
 
     @Column(nullable = false, length = 100)
     private String departmentName;
+
+
+    @OneToMany(mappedBy = "department")
+    private List<Student> students;
 }

@@ -2,6 +2,7 @@ package com.rnr.SMS.Dto;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import lombok.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -20,19 +21,18 @@ public class StudentRequestDto {
     @Email(message = "Please enter a valid email address")
     private String email;
 
-    @NotBlank(message = "Course is required")
-    private String course;
-
     @NotBlank(message = "Password is required")
-    @Pattern(
-            regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-            message = "Password must contain at least 8 chars, 1 uppercase, 1 lowercase, 1 digit, 1 special char"
-    )
     private String password;
+
 
     @Valid
     private AddressRequestDto address;
 
+
     @NotNull(message = "Department id is required")
     private Long departmentId;
+
+
+    @NotEmpty(message = "At least one course is required")
+    private List<Long> courseIds;
 }

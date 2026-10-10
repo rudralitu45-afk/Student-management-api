@@ -1,5 +1,6 @@
 package com.rnr.SMS.Dto;
 import lombok.*;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -10,7 +11,7 @@ public class StudentResponseDto {
     private String firstName;
     private String lastName;
     private String email;
-    private String course;
     private AddressResponseDto address;
     private String departmentName;
+    private List<CourseResponseDto> courses;
 }
